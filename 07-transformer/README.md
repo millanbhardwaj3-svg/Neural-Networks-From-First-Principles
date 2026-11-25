@@ -37,7 +37,7 @@ know re in of go ho peasirh.
 "No!"
 ```
 
-Not coherent sentences, but correctly paired punctuation and quote marks, consistent paragraph breaks, correct capitalization, and a lot of individually correctly-spelled short words — a reasonable outcome for a character-level model at this scale and loss.
+Not coherent sentences, but correctly paired punctuation and quote marks, consistent paragraph breaks, correct capitalization, and a lot of individually correctly-spelled short words (a reasonable outcome for a character-level model at this scale and loss).
 
 ## What I learned
 
@@ -47,7 +47,7 @@ Not coherent sentences, but correctly paired punctuation and quote marks, consis
 
 ## Things that went wrong
 
-- **Attention scaling factor**: I scaled the dot product by the embedding dimension instead of `head_size`. Once multi-head split the embedding across several heads, those two numbers stopped being the same thing, and scaling by the wrong one gave a technically-runnable but incorrect attention distribution — no crash, just quietly wrong, which is the kind of bug that's easy to miss if you're only checking that the code runs rather than that it's doing the right computation.
+- **Attention scaling factor**: I scaled the dot product by the embedding dimension instead of `head_size`. Once multi-head split the embedding across several heads, those two numbers stopped being the same thing, and scaling by the wrong one gave a technically-runnable but incorrect attention distribution - no crash, just quietly wrong, which is the kind of bug that's easy to miss if you're only checking that the code runs rather than that it's doing the right computation.
 - **Stale `tril` buffer**: `register_buffer` bakes the causal mask in at construction time, using whatever `context_length` is in scope then. I scaled `context_length` up later in the notebook without rebuilding the model, so the buffer stayed sized at the old, smaller value. Python's slicing doesn't error on an out-of-range stop index, so `self.tril[:T, :T]` silently returned the whole (too-small) buffer instead of failing immediately — it only surfaced once the mismatched shapes hit `masked_fill`.
 
 ## Potential next steps
